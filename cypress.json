@@ -1,7 +1,7 @@
 {
   "baseUrl" : "https://www.verivox.de",
   "reporter": "cypress-multi-reporters",
-  "defaultCommandTimeout": 10000,
+  "defaultCommandTimeout": 20000,
   "reporterOptions": {
       "reporterEnabled": "mochawesome",
       "mochawesomeReporterOptions": {

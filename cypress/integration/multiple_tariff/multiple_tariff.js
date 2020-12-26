@@ -1,11 +1,18 @@
 import { Given, When, And, Then } from "cypress-cucumber-preprocessor/steps";
 
 let tarifeTotal = "";
+let listLast = "";
+let btnLast = "";
 
 Given("that I can open www.verivox.de", () => {
   cy.visit("/");
-  // Accept all cookies
-  // cy.get('[id="uc-btn-accept-banner"]').click();
+
+  // Handle accept cokies overlay if visible
+  cy.get('button[id="uc-btn-accept-banner"]').then(($btn) => {
+    if ($btn.is(":visible")) {
+      $btn.trigger("click");
+    }
+  });
 });
 
 When("I navigate to the DSL calculator page", () => {
@@ -18,7 +25,8 @@ And("I enter 030 for my area code", () => {
 });
 
 And("I select the 100 Mbit\\/s bandwidth option", () => {
-  cy.get("label").contains("100").click();
+  // FIXME : Remove force
+  cy.get("label").contains("100").click({ force: true });
 });
 
 And("I click the Jetzt vergleichen button", () => {
@@ -28,13 +36,16 @@ And("I click the Jetzt vergleichen button", () => {
 Then(
   "I should see the total number of available tariffs listed in the Ermittelte Tarife section",
   () => {
-    cy.get(".summary-tariff").contains("Tarife").should("be.visible");
-    // Save total number of tarifs in variable
+    // wait loading screen overlay
+    cy.get(".loading-screen").should("not.exist");
+
+    // VERIFY : Get total number of available tariffs listed in the Ermittelte Tarife section an save in variable
     cy.get(".summary-tariff")
       .contains("Tarife")
       .then(($elm) => {
         tarifeTotal = parseInt($elm.text(), 10);
-      });
+      })
+      .should("be.visible");
   }
 );
 
@@ -43,8 +54,12 @@ When("I scroll to the end of the Result List page", () => {
 });
 
 Then("I should see only the first 20 tariffs displayed", () => {
-  cy.get(".comparison-rank").contains("20").should("be.visible");
-  cy.get(".comparison-rank").contains("21").should("not.exist");
+  // VERIFY : That only the first 20 tariffs are displayed
+  cy.get(".my-4")
+    .find(".comparison-rank")
+    .should("exist")
+    .and("have.length", 20);
+  cy.get(".my-4").find(".comparison-rank").last().should("have.text", "20.");
 });
 
 When("I click on the button labeled 20 weitere Tarife laden", () => {
@@ -52,40 +67,45 @@ When("I click on the button labeled 20 weitere Tarife laden", () => {
 });
 
 Then("I should see the next 20 tariffs displayed", () => {
-  // FIXME : Remove timer
-  cy.wait(5000);
-  cy.get("button").contains("weitere tarife laden").scrollIntoView();
-  cy.get(".comparison-rank").contains("40").should("be.visible");
-  cy.get(".comparison-rank").contains("41").should("not.exist");
+  // wait loading screen overlay
+  cy.get(".loading-screen").should("not.exist");
+
+  // VERIFY : That next 20 tariffs are displayed
+  cy.get(".my-4")
+    .find(".comparison-rank")
+    .should("exist")
+    .and("have.length", 40);
+  cy.get(".my-4").find(".comparison-rank").last().should("have.text", "40.");
 });
 
 And(
   "I can continue to load any additional tariffs until all tariffs have been displayed",
   () => {
+    // VERIFY : I can continue to load any additional tariffs until all tariffs have been displayed
     // FIXME : add dinamic check and remove timers
-    // let condition = true;
+    cy.get("button").contains("weitere tarife laden").click();
+    // wait loading screen overlay
+    cy.get(".loading-screen").should("not.exist");
+    cy.get(".comparison-rank").contains("60").should("be.visible");
 
-    // while (condition) {
-    //   cy.get(".comparison-rank")
-    //     .last()
-    //     .then(($num) => {
-    //       let resultTarifeTotal = parseInt($num.text(), 10);
-    //       let numTarifeTotal = parseInt($tarifeTotal.text(), 10);
-    //       if (resultTarifeTotal === numTarifeTotal) {
-    //         condition = false;
-    //       } else {
-    //         cy.get("button").contains("weitere tarife laden").click();
-    //       }
-    //     });
-    // }
+    // VERIFY : that the final weitere Tarife laden button displays the expected number of tariffs remaining
+    cy.get(".my-4")
+      .find(".comparison-rank")
+      .then(($elm) => {
+        listLast = $elm.length;
+      });
+    cy.get("button")
+      .contains("weitere tarife laden")
+      .then(($btn) => {
+        btnLast = parseInt($btn.text(), 10);
+        expect(tarifeTotal - listLast).to.equal(btnLast);
+      });
 
     cy.get("button").contains("weitere tarife laden").click();
-    cy.wait(10000);
-    cy.get(".comparison-rank").contains("60").click();
-    cy.get("button").contains("weitere tarife laden").click();
-    cy.wait(5000);
 
-    // Check if the total number of tariffs displayed matches the total listed in the Ermittelte Tarife section
+    // VERIFY : if the total number of tariffs displayed matches the total listed in the Ermittelte Tarife section
+    // wait loading screen overlay
+    cy.get(".loading-screen").should("not.exist");
     cy.get(".comparison-rank")
       .last()
       .should("be.visible")
@@ -94,7 +114,7 @@ And(
         expect(resultTarifeTotal).to.be.equal(tarifeTotal);
       });
 
-    // Check that the weitere Tarife laden button is no longer displayed when all the tariffs are visible
+    // VERIFY : that the weitere Tarife laden button is no longer displayed when all the tariffs are visible
     cy.get("button").contains("weitere tarife laden").should("not.exist");
   }
 );
