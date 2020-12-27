@@ -7,8 +7,8 @@ Feature: Multiple tariff result page
   Scenario: Load multiple tariff result pages
     Given that I can open www.verivox.de
     When I navigate to the DSL calculator page
-    And I enter 030 for my area code
-    And I select the 100 Mbit/s bandwidth option
+    And I enter "030" for my area code
+    And I select the "100" Mbit/s bandwidth option
     And I click the Jetzt vergleichen button
     Then I should see the total number of available tariffs listed in the Ermittelte Tarife section
     When I scroll to the end of the Result List page

@@ -91,6 +91,8 @@ export function checkOfferDetails() {
   homePage.waitLoadingOverlay();
 
   // VERIFY : that both In 5 Minuten online wechseln buttons are presented
+  // FIXME : Find a way how to resolve the flaky test issues and remove timers
+  cy.wait(3000);
   cy.get(BUTTONS_5_MIN_ONLINE_ELEMENT).should(
     "have.length",
     BUTTONS_5_MIN_ONLINE_NUM
