@@ -33,7 +33,8 @@ export const TARIFE_DETAILS_AVERAGE_PRICE_TEXT = "Durchschnittspreis";
 
 // Get and save details from tariffs result from the page for the check after choosing the tariff
 export function handleTarifeResultPage() {
-  homePage.waitLoadingOverlay;
+  // Wait for the loading screen overlay to disappear
+  homePage.waitLoadingOverlay();
 
   // VERIFY : that number of available tariffs is visible
   cy.get(TOTAL_TARIFES_NUM_FIELD)
