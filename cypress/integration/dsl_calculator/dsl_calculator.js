@@ -12,12 +12,12 @@ When("I navigate to the DSL calculator page", () => {
   homePage.goToDslCalculator();
 });
 
-And("I enter {string} for my area code", (content) => {
-  dslCalculatorPage.addAreaCode(content);
+And("I enter {string} for my area code", (areaCode) => {
+  dslCalculatorPage.addAreaCode(areaCode);
 });
 
-And("I select the {string} Mbit\\/s bandwidth option", (content) => {
-  dslCalculatorPage.addBandwidth(content);
+And("I select the {string} Mbit\\/s bandwidth option", (bandwidth) => {
+  dslCalculatorPage.addBandwidth(bandwidth);
 });
 
 And("I click the Jetzt vergleichen button", () => {
