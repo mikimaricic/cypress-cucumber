@@ -24,7 +24,7 @@ npm install
 
 ## Steps how to run test:
 
-Run all 3 scenarios from coman line with this command (be positioned in this folder: cypress-cucumber):
+Run all 3 scenarios from command line with this command (be positioned in this folder: cypress-cucumber):
 
 ```
 npx cypress run --spec "cypress/integration/\*.feature"
@@ -43,6 +43,20 @@ The result should be:
 └────────────────────────────────────────────────────────────────────────────────────────────────┘
   ✔  All specs passed!                        00:33        3        3        -        -        -
 ```
+
+Run Cypress test UI from the command line with this command (be positioned in this folder: cypress-cucumber):
+
+```
+npx cypress open
+```
+
+Cypress UI should open like in the screenshot below:
+
+- https://ibb.co/tDpJY2z
+
+You can manually run the test by clicking one of the .feature test files then you should see test execution (see screenshot):
+
+- https://ibb.co/wcKX3pY
 
 ## Reports:
 
