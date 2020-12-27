@@ -27,7 +27,7 @@ npm install
 Run all 3 scenarios from command line with this command (be positioned in this folder: cypress-cucumber):
 
 ```
-npx cypress run --spec "cypress/integration/\*.feature"
+npx cypress run --spec "cypress/integration/*.feature"
 ```
 
 The result should be:
