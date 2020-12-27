@@ -1,4 +1,6 @@
 node_modules
 **/reports
+**/videos
+**/screenshots
 package-lock.json
 .DS_Store
